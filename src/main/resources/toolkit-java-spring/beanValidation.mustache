@@ -1,0 +1,28 @@
+  @Valid
+{{#required}}
+  @NotNull(message="{{=<% %>=}}{<%={{ }}=%>{{classname}}.{{name}}.notNull.fail}")
+{{/required}}
+{{#pattern}}
+  @Pattern(regexp = "{{pattern}}", message="{{=<% %>=}}{<%={{ }}=%>{{classname}}.{{name}}.pattern.fail}")
+{{/pattern}}
+{{#minLength}}
+{{#maxLength}}
+  @Size(min={{minLength}},max={{maxLength}}, message="{{=<% %>=}}{<%={{ }}=%>{{classname}}.{{name}}.size.fail}")
+{{/maxLength}}
+{{/minLength}}
+{{#minLength}}
+{{^maxLength}}
+  @Size(min={{minLength}}, message="{{=<% %>=}}{<%={{ }}=%>{{classname}}.{{name}}.size.fail}")
+{{/maxLength}}
+{{/minLength}}
+{{^minLength}}
+{{#maxLength}}
+  @Size(max={{maxLength}}, message="{{=<% %>=}}{<%={{ }}=%>{{classname}}.{{name}}.size.fail}")
+{{/maxLength}}
+{{/minLength}}
+{{#minimum}}
+  @DecimalMin(value = "{{minimum}}", message = "{{=<% %>=}}{<%={{ }}=%>{{classname}}.{{name}}.minimum.fail}")
+{{/minimum}}
+{{#maximum}}
+  @DecimalMax(value = "{{maximum}}", message = "{{=<% %>=}}{<%={{ }}=%>{{classname}}.{{name}}.maximum.fail}")
+{{/maximum}}

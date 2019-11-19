@@ -1,0 +1,84 @@
+/**
+ * {{#description}}{{.}}{{/description}}{{^description}}{{classname}}{{/description}}
+ */
+public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}} {{#serializableModel}}implements Serializable{{/serializableModel}} {
+  {{#vars}}
+    {{#isEnum}}
+    {{^isContainer}}
+{{>enumClass}}
+    {{/isContainer}}
+    {{/isEnum}}
+    {{#items.isEnum}}
+      {{#items}}
+      {{^isContainer}}
+{{>enumClass}}
+      {{/isContainer}}
+      {{/items}}
+    {{/items.isEnum}}
+  @JsonProperty("{{baseName}}")
+  {{#gson}}
+  @SerializedName("{{baseName}}")
+  {{/gson}}
+{{>beanValidation}}  private {{{datatypeWithEnum}}} {{name}} = {{{defaultValue}}};
+  {{/vars}}
+
+  public {{classname}}() {
+  }
+  {{#vars.0}}
+
+  private {{classname}}({{#vars}}{{{datatypeWithEnum}}} {{name}}{{^-last}}, {{/-last}}{{/vars}}) {
+  {{#vars}}
+    this.{{name}} = {{name}};
+  {{/vars}}
+  }
+  {{/vars.0}}
+
+{{#vars}}
+  /**
+  {{#description}}
+   * {{{description}}}
+  {{/description}}
+  {{^description}}
+   * Get {{name}}
+  {{/description}}
+  {{#minimum}}
+   * minimum: {{minimum}}
+  {{/minimum}}
+  {{#maximum}}
+   * maximum: {{maximum}}
+  {{/maximum}}
+   * @return {{name}}
+   */
+ {{#vendorExtensions.extraAnnotation}}
+  {{vendorExtensions.extraAnnotation}}
+  {{/vendorExtensions.extraAnnotation}}
+  public {{{datatypeWithEnum}}} {{getter}}() {
+    return {{name}};
+  }
+
+  public {{classname}} with{{nameInCamelCase}}({{{datatypeWithEnum}}} {{name}}) {
+   return new {{classname}}({{#vars}}{{#isListContainer}}{{name}} != null ? Collections.unmodifiableList({{name}}) : null{{/isListContainer}}{{^isListContainer}}{{name}}{{/isListContainer}}{{^-last}}, {{/-last}}{{/vars}});
+  }
+
+  {{/vars}}
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }{{#hasVars}}
+    {{classname}} {{classVarName}} = ({{classname}}) o;
+    return {{#vars}}Objects.equals(this.{{name}}, {{classVarName}}.{{name}}){{#hasMore}} &&
+        {{/hasMore}}{{/vars}}{{#parent}} &&
+        super.equals(o){{/parent}};{{/hasVars}}{{^hasVars}}
+    return true;{{/hasVars}}
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash({{#vars}}{{name}}{{#hasMore}}, {{/hasMore}}{{/vars}}{{#parent}}{{#hasVars}}, {{/hasVars}}super.hashCode(){{/parent}});
+  }
+}
