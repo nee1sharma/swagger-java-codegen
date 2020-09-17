@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Sets.difference;
-import static java.util.stream.Collectors.joining;
 
 public class JavaSpringCodegen extends SpringCodegen {
 
@@ -92,7 +91,7 @@ public class JavaSpringCodegen extends SpringCodegen {
             throw new IllegalArgumentException(MODEL_NAME_PROP_MAP_NOT_EXISTS_MESSAGE);
         }
 
-        Map<String, Map<String, Object>> propTitleMap = new HashMap<>();
+        Map<String, Map<String, Object>> propTitleMap;
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
             propTitleMap = mapper.readValue(inputFile, Map.class);
@@ -222,8 +221,8 @@ public class JavaSpringCodegen extends SpringCodegen {
     }
 
     @Override
-    public Map<String, Object> postProcessOperations(Map<String, Object> objs) {
-        Map<String, Object> operations = super.postProcessOperations(objs);
+    public Map<String, Object> postProcessOperations(Map<String, Object> objects) {
+        Map<String, Object> operations = super.postProcessOperations(objects);
         HashMap innerOperations = (HashMap) operations.get("operations");
         List<CodegenOperation> actualOperations = (List<CodegenOperation>) innerOperations.get("operation");
 
@@ -264,12 +263,12 @@ public class JavaSpringCodegen extends SpringCodegen {
         Sets.SetView<String> classesDiff = difference(ignoredIndexDefinitions.keySet(), classNames);
         if (!classesDiff.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Classes to ignore index for does not exists: " + classesDiff.stream().collect(joining(", ")));
+                    "Classes to ignore index for does not exists: " + String.join(", ", classesDiff));
         }
     }
 
-    private void markVariableGeneratedStatus(Map<String, Object> objs, CodegenModel cm) {
-        cm.allVars.forEach(v -> v.vendorExtensions.put("isGenerated", objs.keySet().contains(v.datatype)));
+    private void markVariableGeneratedStatus(Map<String, Object> objects, CodegenModel cm) {
+        cm.allVars.forEach(v -> v.vendorExtensions.put("isGenerated", objects.containsKey(v.datatype)));
     }
 
     private static class Endpoint {
